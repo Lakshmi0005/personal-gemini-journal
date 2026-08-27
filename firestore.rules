@@ -1,0 +1,39 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Authentication & ownership helper functions
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+    
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+
+    // User profile data and private journal data
+    match /users/{userId} {
+      allow read, write: if isOwner(userId);
+      
+      // User's journal sessions
+      match /sessions/{sessionId} {
+        allow read, write: if isOwner(userId);
+        
+        // Session messages subcollection
+        match /messages/{messageId} {
+          allow read, write: if isOwner(userId);
+        }
+      }
+
+      // User's journal summaries
+      match /summaries/{summaryId} {
+        allow read, write: if isOwner(userId);
+      }
+    }
+
+    // Default catch-all deny rule
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
+

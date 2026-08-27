@@ -1,0 +1,89 @@
+{
+  "entities": {
+    "UserProfile": {
+      "title": "UserProfile",
+      "description": "User profile information",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string" },
+        "email": { "type": "string" },
+        "displayName": { "type": "string" },
+        "photoURL": { "type": "string" },
+        "isAnonymous": { "type": "boolean" },
+        "createdAt": { "type": "number" },
+        "lastLoginAt": { "type": "number" }
+      },
+      "required": ["uid"]
+    },
+    "JournalSession": {
+      "title": "JournalSession",
+      "description": "A user's journal and brainstorming chat session",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "userId": { "type": "string" },
+        "title": { "type": "string" },
+        "mode": { "type": "string" },
+        "createdAt": { "type": "number" },
+        "updatedAt": { "type": "number" },
+        "messageCount": { "type": "number" },
+        "lastMessagePreview": { "type": "string" },
+        "summaryId": { "type": "string" },
+        "isSummarized": { "type": "boolean" },
+        "status": { "type": "string", "enum": ["active", "completed", "archived"] }
+      },
+      "required": ["id", "userId", "mode", "title", "createdAt", "updatedAt", "messageCount", "status"]
+    },
+    "JournalMessage": {
+      "title": "JournalMessage",
+      "description": "An individual message within a journal session",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "role": { "type": "string", "enum": ["user", "model"] },
+        "text": { "type": "string" },
+        "timestamp": { "type": "number" },
+        "tokenCount": { "type": "number" }
+      },
+      "required": ["id", "role", "text", "timestamp"]
+    },
+    "JournalSummary": {
+      "title": "JournalSummary",
+      "description": "An AI-generated executive summary and synthesis of a journal session",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "sessionId": { "type": "string" },
+        "userId": { "type": "string" },
+        "title": { "type": "string" },
+        "overview": { "type": "string" },
+        "keyThemes": { "type": "array" },
+        "actionItems": { "type": "array" },
+        "moodInsights": { "type": "string" },
+        "followUpQuestions": { "type": "array" },
+        "createdAt": { "type": "number" },
+        "messageCount": { "type": "number" },
+        "mode": { "type": "string" }
+      },
+      "required": ["id", "sessionId", "userId", "title", "overview", "keyThemes", "actionItems", "moodInsights", "followUpQuestions", "createdAt", "messageCount", "mode"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": "UserProfile",
+      "description": "User profile document"
+    },
+    "/users/{userId}/sessions/{sessionId}": {
+      "schema": "JournalSession",
+      "description": "User journal session"
+    },
+    "/users/{userId}/sessions/{sessionId}/messages/{messageId}": {
+      "schema": "JournalMessage",
+      "description": "Messages inside a user journal session"
+    },
+    "/users/{userId}/summaries/{summaryId}": {
+      "schema": "JournalSummary",
+      "description": "User journal session summaries"
+    }
+  }
+}

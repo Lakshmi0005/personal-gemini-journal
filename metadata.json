@@ -1,0 +1,8 @@
+{
+  "name": "Remix Personal Gemini Journal",
+  "description": "A private, security-first AI journaling and brainstorming application with multi-turn Gemini conversations and automated summarization.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}

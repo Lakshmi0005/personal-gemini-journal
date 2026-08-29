@@ -1,7 +1,6 @@
-# Use Node.js
-FROM node:20-slim
+# Build stage
+FROM node:20-slim AS builder
 
-# Set working directory
 WORKDIR /app
 
 # Copy package files
@@ -10,17 +9,32 @@ COPY package*.json ./
 # Install dependencies
 RUN npm ci
 
-# Copy project files
+# Copy source code
 COPY . .
 
-# Build the application
+# Build frontend and backend
 RUN npm run build
 
-# Cloud Run uses port 8080
+
+# Production stage
+FROM node:20-slim
+
+WORKDIR /app
+
+# Copy package files
+COPY package*.json ./
+
+# Install only production dependencies
+RUN npm ci --omit=dev
+
+# Copy built application
+COPY --from=builder /app/dist ./dist
+
+# Cloud Run environment
+ENV NODE_ENV=production
 ENV PORT=8080
 
-# Expose port
 EXPOSE 8080
 
-# Start the application
-CMD ["npm", "start"]
+# Start server
+CMD ["node", "dist/server.cjs"]

@@ -8,7 +8,7 @@ import firebaseConfigData from './firebase-applet-config.json';
 
 dotenv.config();
 
-const PORT = 3000;
+const PORT = Number(process.env.PORT) || 8080;
 const PROJECT_ID = firebaseConfigData.projectId || process.env.FIREBASE_PROJECT_ID || 'gen-lang-client-0957432149';
 
 // Google public keys for Firebase Auth ID token verification
